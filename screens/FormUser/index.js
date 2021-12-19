@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { auth, db } from "../../config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 
 import {
   Image,
@@ -25,38 +27,47 @@ const FormUser = () => {
 
   const [fatherName, setfatherName] = useState("");
   const [CNIC, setCNIC] = useState("");
-  const [dateOfNumber, setdateOfNumber] = useState("");
+  const [dateOfBirth, setdateOfBirth] = useState("");
   const [numOfFamily, setnumOfFamily] = useState("");
 
-  async function signupHandler() {
-    console.log("clicked signup");
+  async function submissionHandler() {
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log(email);
-          console.log(password);
-          console.log("User Signed in")
-          navigation.navigate('signin')
-          
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode);
-          console.log(errorMessage);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = user.uid;
+        console.log(uid)
 
-          // ..
-        });
+        async function getData() {
 
+          const docRef = doc(db, "Public", uid);
+          const docSnap = await getDoc(docRef);
 
+          if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
 
+            await setDoc(doc(db, "Public", uid), {
+              fatherName,
+              CNIC,
+              dateOfBirth,
+              numOfFamily,
+            }, { merge: true });
+            navigation.navigate('pendingPage')
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        }
 
+        getData()
+        // ...
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
 
-    // console.log(name, fatherName, mobileNumber, email, password);
-    // await createUser(name, fatherName, mobileNumber, email, password)
-    
   }
 
   return (
@@ -71,42 +82,37 @@ const FormUser = () => {
             { backgroundColor: "#5ABC34" },
           ]}
         >
-          <Text style={tw`text-white text-3xl`}>Sign Up!</Text>
+          <Text style={tw`text-white text-3xl`}>Details!</Text>
           <Text style={tw`text-white p-3 text-center`}>
-            Please fill your details below to complete your account
+            We want some further details from you for the process
           </Text>
         </View>
         <View style={tw`mx-10 mt-10`}>
           <TextInput
-            onChangeText={setName}
+            onChangeText={setfatherName}
             style={[styles.input, tw`border-b text-lg mt-5`]}
             placeholderTextColor="white"
-            placeholder="Full Name"
+            placeholder="Fathers Name"
           />
           <TextInput
-            onChangeText={setmobileNumber}
+            onChangeText={setCNIC}
             style={[styles.input, tw`border-b text-lg mt-5`]}
             placeholderTextColor="white"
-            placeholder="Mobile Number"
+            placeholder="CNIC"
           />
           <TextInput
-            onChangeText={setemail}
+            onChangeText={setdateOfBirth}
             style={[styles.input, tw`border-b text-lg mt-5`]}
             placeholderTextColor="white"
-            placeholder="Email"
+            placeholder="Date of Birth"
           />
           <TextInput
-            onChangeText={setpassword}
+            onChangeText={setnumOfFamily}
             style={[styles.input, tw`border-b text-lg mt-5`]}
             placeholderTextColor="white"
-            placeholder="Password"
+            placeholder="Family Members"
           />
-          <TextInput
-            onChangeText={setAdmin}
-            style={[styles.input, tw`border-b text-lg mt-5`]}
-            placeholderTextColor="white"
-            placeholder="Are you admin or public ?"
-          />
+
           <TouchableOpacity
             style={tw`mt-5`}
             onPress={() => navigation.navigate("signin")}
@@ -120,8 +126,8 @@ const FormUser = () => {
             { backgroundColor: "#5ABC34" },
           ]}
         >
-          <TouchableOpacity onPress={signupHandler}>
-            <Text style={tw`text-white text-center text-lg`}>Signup</Text>
+          <TouchableOpacity onPress={submissionHandler}>
+            <Text style={tw`text-white text-center text-lg`}>Submission</Text>
           </TouchableOpacity>
         </View>
       </View>

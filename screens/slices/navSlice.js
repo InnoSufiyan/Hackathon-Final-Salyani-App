@@ -10,6 +10,9 @@ export const navSlice = createSlice({
   name: "nav",
   initialState,
   reducers: {
+    setuserState: (state, action) => {
+      state.userState = action.payload;
+    },
     setPickup: (state, action) => {
       state.pickup = action.payload;
     },
@@ -22,9 +25,10 @@ export const navSlice = createSlice({
   },
 });
 
-export const { setPickup, setDestination, settravelTimeInformation } =
+export const { setuserState, setPickup, setDestination, settravelTimeInformation } =
   navSlice.actions;
 
+export const selectuserState = (state) => state.nav.userState;
 export const selectPickup = (state) => state.nav.pickup;
 export const selectDestination = (state) => state.nav.destination;
 export const selecttravelTimeInformation = (state) =>

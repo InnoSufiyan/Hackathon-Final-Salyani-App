@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { useSelector } from "react-redux";
 import { selectDestination, selectPickup, selecttravelTimeInformation } from "../../screens/slices/navSlice";
 
@@ -91,7 +91,9 @@ const Map = () => {
           title=""
           description=""
           identifier="destination"
-        />
+        >
+          <Image source={require('../../assets/bank.png')} style={{width: 35, height: 35, resizeMode: "contain"}} />
+          </Marker>
       ))}
 
 

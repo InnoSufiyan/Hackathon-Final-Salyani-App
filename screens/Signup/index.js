@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { auth, db } from "../../config/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import {
   Image,
@@ -27,7 +28,6 @@ const Signup = () => {
   const [mobileNumber, setmobileNumber] = useState("");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
-  const [admin, setAdmin] = useState("");
 
   async function signupHandler() {
     console.log("clicked signup");
@@ -38,31 +38,19 @@ const Signup = () => {
         const user = userCredential.user;
         console.log(email);
         console.log(password);
-        console.log("User Signed in")
-        navigation.navigate('signin')
+        console.log("User Signed up")
+        console.log(name,mobileNumber,email,password)
 
-        // const docRef = doc(db, "users", user.uid);
-        // const docSnap = getDoc(docRef)
-        //   .then((docSnap) => {
-        //     if (docSnap.exists()) {
-        //       const userDetails = docSnap.data();
-        //       console.log("Document data:", userDetails);
-              
-
-        //     } else {
-        //       // doc.data() will be undefined in this case
-        //       console.log("No such document!");
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //   });
-
-
-
-
-
-
+        async function sendPublicDateBase() {
+          await setDoc(doc(db, "Public", user.uid), {
+            name,
+            mobileNumber,
+            email,
+            password,
+          });
+          navigation.navigate('signin')
+        }
+        sendPublicDateBase()
 
 
       })
@@ -74,14 +62,6 @@ const Signup = () => {
 
         // ..
       });
-
-
-
-
-
-    // console.log(name, fatherName, mobileNumber, email, password);
-    // await createUser(name, fatherName, mobileNumber, email, password)
-
   }
 
   return (
@@ -125,12 +105,6 @@ const Signup = () => {
             style={[styles.input, tw`border-b text-lg mt-5`]}
             placeholderTextColor="white"
             placeholder="Password"
-          />
-          <TextInput
-            onChangeText={setAdmin}
-            style={[styles.input, tw`border-b text-lg mt-5`]}
-            placeholderTextColor="white"
-            placeholder="Are you admin or public ?"
           />
           <TouchableOpacity
             style={tw`mt-5`}

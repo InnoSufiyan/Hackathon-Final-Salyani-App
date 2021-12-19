@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "uber4.0",
-    "slug": "uber4.0",
+    "name": "Saylani SMIT HACKATHON",
+    "slug": "saylani-smit-hackathon",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Saylani Hackathon Final Assignment",
+    "githubUrl": "https://github.com/InnoSufiyan/Hackathon-Final-Salyani-App.git"
   }
 }

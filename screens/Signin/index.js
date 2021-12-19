@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { db, auth } from "../../config/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
+
+import { setuserState } from "../slices/navSlice";
 
 import {
   Image,
@@ -21,6 +24,8 @@ import tw from "twrnc";
 import Button from "../../components/Button";
 
 const Signin = () => {
+  
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const [email, setemail] = useState("");
@@ -34,12 +39,14 @@ const Signin = () => {
         // Signed in 
         const user = userCredential.user;
         console.log("user signing in", user)
+        dispatch(setuserState(true))
         navigation.navigate('dashboard')
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage)
+        alert(`${errorMessage}, "create account plz"`)
       });
   }
 
@@ -58,7 +65,7 @@ const Signin = () => {
         >
           <Text style={tw`text-black text-3xl`}>Sign In!</Text>
           <Text style={tw`text-black p-3 text-center`}>
-            Let's get you a Ride..!
+            Food for you..!
           </Text>
         </View>
         <View style={tw`mx-10 mt-10`}>

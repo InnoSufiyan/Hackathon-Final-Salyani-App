@@ -14,6 +14,7 @@ import Dashboard from "./screens/Dashboard";
 import Destination from "./screens/Destination";
 import RideOption from "./screens/RideOption";
 import FormUser from "./screens/FormUser";
+import PendingPage from "./screens/PendingPage";
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,13 @@ export default function App() {
           <Stack.Screen
             name="formUser"
             component={FormUser}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="pendingPage"
+            component={PendingPage}
             options={{
               headerShown: false,
             }}

@@ -9,7 +9,7 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 
 import { GOOGLE_MAPS_APIKEY } from "@env";
 
-import { setDestination, setPickup } from "../slices/navSlice";
+import { setDestination, setPickup, setuserState } from "../slices/navSlice";
 import Button from "../../components/Button";
 
 import * as Location from "expo-location";
@@ -70,7 +70,7 @@ const Dashboard = () => {
     signOut(auth).then(() => {
       // Sign-out successful.
       console.log("user sign out successfully");
-
+      dispatch(setuserState(false))
       navigation.navigate('signin')
     }).catch((error) => {
       // An error happened.
@@ -138,7 +138,7 @@ const Dashboard = () => {
             debounce={400}
           />
 
-          <Button textName="Choose Destination" toNavigate="destination" />
+          <Button textName="Next" toNavigate="destination" />
         </View>
       </View>
     </>

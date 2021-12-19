@@ -6,14 +6,14 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../config/firebase";
 
 import { useSelector } from "react-redux";
-import { selectuserState } from "../../screens/slices/navSlice";
+import { selectuserState } from "../slices/navSlice";
 
 
 import Button from "../../components/Button";
 import poorImage from "../../assets/123.png";
 import logo from "../../assets/LogoKhanaSabkliye-01.png";
 
-const Splash = ({ navigation }) => {
+const PendingPage = ({ navigation }) => {
   
   const userState = useSelector(selectuserState);
  
@@ -46,7 +46,7 @@ const Splash = ({ navigation }) => {
       </View>
       <View style={tw`absolute bottom-5 w-full justify-center`}>
         <View style={{marginVertical: 5}}>
-          <Button color="white" textName="Public User" toNavigate={userState ? "dashboard" : "signin"}/>
+          <Button textName="Public User" toNavigate={userState ? "dashboard" : "signin"}/>
         </View>
         <View>
           <Button textName="Staff User" toNavigate={userState ? "dashboard" : "signin"}/>
@@ -57,6 +57,6 @@ const Splash = ({ navigation }) => {
   );
 };
 
-export default Splash;
+export default PendingPage;
 
 const styles = StyleSheet.create({});

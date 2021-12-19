@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Map from "../../components/Map";
 import { useDispatch } from "react-redux";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
+
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+
+
+import { auth, db } from "../../config/firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+
 import { GOOGLE_MAPS_APIKEY } from "@env";
 
-import { setDestination, setPickup } from "../slices/navSlice";
+import { setDestination, setPickup, setuserState } from "../slices/navSlice";
 import Button from "../../components/Button";
 
 import * as Location from "expo-location";
 
 import tw from "twrnc";
 import { createStackNavigator } from "@react-navigation/stack";
+import { withSafeAreaInsets } from "react-native-safe-area-context";
 
 const Stack = createStackNavigator();
 
@@ -66,9 +74,25 @@ const foodbanks = [
 
 const Destination = () => {
   const dispatch = useDispatch();
+  
+  const navigation = useNavigation();
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+
+  const logoutHandler = () => {
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      console.log("user sign out successfully");
+      dispatch(setuserState(false))
+      navigation.navigate('signin')
+    }).catch((error) => {
+      // An error happened.
+      console.log("not signed out")
+      dispatch(setuserState(false))
+      navigation.navigate('signin')
+    });
+  }
 
   useEffect(() => {
     dispatch(setDestination(foodbanks))
@@ -80,8 +104,42 @@ const Destination = () => {
         <View style={[tw`h-1.5/2 rounded-b-3xl`]}>
           <Map />
         </View>
+        <TouchableOpacity style={{
+          position: "absolute",
+          top: 60,
+          backgroundColor: "#5ABC34",
+          left: 25,
+          borderRadius: 50,
+          padding: 10,
+
+
+
+
+
+        }}
+          onPress={logoutHandler}>
+          <Text style={{
+            color: 'white',
+            marginHorizontal: 20
+          }}
+
+          >
+            Logout
+          </Text>
+        </TouchableOpacity>
+        <View>
+          <Text style={{
+            textAlign: 'center',
+            color: "white",
+            fontSize: 20,
+            paddingTop: 20
+
+          }}>
+            Zoom out to see all the food banks
+          </Text>
+        </View>
         <View style={tw`absolute bottom-5 w-full justify-center`}>
-          <Button textName="Process" toNavigate="formUser" />
+          <Button textName="Next" toNavigate="formUser" />
         </View>
       </View>
     </>
